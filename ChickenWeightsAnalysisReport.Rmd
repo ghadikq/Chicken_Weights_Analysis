@@ -1,0 +1,98 @@
+---
+title: "Chicken Weights Analysis Report"
+author: "Ghadi K"
+date: "11-10-2020"
+output: 
+  html_document:
+    theme: journal
+    highlight: espresso
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE , results='hide', warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, echo=FALSE , warning=FALSE, message=FALSE}
+library(tidyverse)
+library(DT)
+
+```
+In this report I worked with chickwts dataset it has two variables weight a numeric variable giving the chick weight and feed factor giving the feed type. 
+This dataset is based on an experiment conducted to measure and compare the effectiveness of various feed supplements on the growth rate of chickens.
+This report focuses on the relationship between weight and food type and if a change in food type really affects chickens in any way. 
+
+# Descriptive Statistics
+First I explore the data to understand it better using descriptive statistics.
+The table below shows the number of each food type, mean and standard deviation for each type.
+You can see that the most occurring food type is Soybean.
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+chickTable <- chickwts %>% 
+  group_by(feed) %>% 
+  summarise(n = length(feed),
+            average = mean(weight),
+            SD = sd(weight))
+datatable(chickTable)
+```
+
+# Plots
+Here I visualize data to see a pattern , trends and detect outliers if exists it is easier to understand these thing after visualize data set .
+
+## Box Plot 
+
+First I plot Boxplot but why ?
+Boxplot can give you information regarding the shape, variability, and center (or median) of a statistical data set. 
+```{r pressure, echo=FALSE}
+chickwts %>%
+  ggplot(aes(x=feed , y=weight)) + geom_boxplot()
+```
+
+
+
+## Jitter Plot
+The second is the jitter plot but why?
+To see the relationship between our variables here they are weight and feed also it is shown how much one variable is affected by another.
+
+```{r, echo=FALSE}
+chickwts %>%
+  ggplot(aes(x=feed , y=weight)) + geom_jitter()+
+  stat_summary(fun.data = mean_sdl,
+               fun.args = list(mult =1),
+               col = "orange")
+```
+
+
+
+# Inferential Statistics
+Here I apply the ANOVA test to determine whether there are any statistically significant differences between the means of two or more independent.
+
+## The one-way ANOVA summary
+```{r, echo=FALSE}
+res.aov <- aov(weight ~ feed, data = chickwts)
+ANOVATable <- summary(res.aov)
+
+library(pander)
+
+pander(ANOVATable, style='rmarkdown')
+
+```
+The value of F here is high then the difference among groups is deemed statistically significant.
+
+## Tukey’s Post-hoc test
+
+After applying the ANOVA test I used Tukey Test to tell me if the results are significant overall but remember it won't tell you exactly where those differences lie.
+```{r, echo=FALSE}
+chickwts.av <- aov(weight ~ feed, data = chickwts)
+tukeyTest <- TukeyHSD(chickwts.av)
+datatable(tukeyTest$feed)
+
+
+```
+So I conclude at the end of this report that the groups are truly statistically significant. 
+
+
+
