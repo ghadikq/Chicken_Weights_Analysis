@@ -36,7 +36,8 @@ chickTable <- chickwts %>%
   summarise(n = length(feed),
             average = mean(weight),
             SD = sd(weight))
-datatable(chickTable)
+datatable(chickTable)%>%
+      formatRound(columns=c('feed','average','SD'), digits=3)
 ```
 
 # Plots
@@ -88,7 +89,8 @@ After applying the ANOVA test I used Tukey Test to tell me if the results are si
 ```{r, echo=FALSE}
 chickwts.av <- aov(weight ~ feed, data = chickwts)
 tukeyTest <- TukeyHSD(chickwts.av)
-datatable(tukeyTest$feed)
+datatable(tukeyTest$feed)%>%
+      formatRound(columns=c('diff','lwr','upr','p adj'), digits=3)
 
 
 ```
