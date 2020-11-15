@@ -9,5 +9,5 @@ This report focuses on the relationship between weight and food type and if a ch
 
 In this report I performed EDA and Data Visualization techniques.<br />
 
-## This Repository Contain:
+## Repository content
 Chicken Weights Analysis done by both R and Python.
