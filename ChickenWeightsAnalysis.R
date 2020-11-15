@@ -8,7 +8,8 @@ chickTable <- chickwts %>%
   summarise(n = length(feed),
             average = mean(weight),
             SD = sd(weight))
-datatable(chickTable)
+datatable(chickTable)%>%
+  formatRound(columns=c('feed','average','SD'), digits=3)
 
 # Box Plot 
 chickwts %>%
@@ -37,7 +38,8 @@ ANOVATable <- summary(res.aov)
 # Tukey’s Post-hoc test Table 
 chickwts.av <- aov(weight ~ feed, data = chickwts)
 tukeyTest <- TukeyHSD(chickwts.av)
-datatable(tukeyTest$feed)
+datatable(tukeyTest$feed)%>%
+  formatRound(columns=c('diff','lwr','upr','p adj'), digits=3)
 
 
 
